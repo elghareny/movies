@@ -1,0 +1,36 @@
+.contain {
+    background-image: url('../../../assets/images/wp3837800-space-4k-wallpapers-DtBDe2vt.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.header {
+    text-shadow: 20px 10px 50px 5px white;
+}
+
+.swiper {
+    width: 100%;
+    height: 100%;
+}
+
+.swiper-slide {
+    text-align: center;
+    font-size: 18px;
+    background: #fff;
+    /* Center slide text vertically */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.swiper-slide img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.swiper {
+    margin-left: auto;
+    margin-right: auto;
+}
