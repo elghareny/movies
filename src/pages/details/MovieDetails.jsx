@@ -1,13 +1,71 @@
 /** @format */
 
 import {BiSolidStar} from "react-icons/bi";
-import {useSelector} from "react-redux";
-import {imagePath} from "../../redux/slices/MoviesSlices";
+import {useDispatch, useSelector} from "react-redux";
+import {addToWatchList, imagePath} from "../../redux/slices/MoviesSlices";
 import {CircularProgress} from "@mui/material";
+import {IoAdd} from "react-icons/io5";
+import {useRef} from "react";
 
 const MovieDetails = () => {
-	const {isLoading} = useSelector((state) => state.moviesStore);
+	const addedBefore = useRef(false);
+	const dispatch = useDispatch();
+	const {isLoading, casts, crews, watchList} = useSelector(
+		(state) => state.moviesStore,
+	);
 	const details = JSON.parse(localStorage.getItem("movieDetail"));
+	// const movieVideo = JSON.parse(localStorage.getItem("movieVideo"));
+
+	const addedToWatchList = (movie) => {
+		for (let i = 0; i < watchList.length; i++) {
+			if (watchList[i].id === movie.id) {
+				addedBefore.current = true;
+				break;
+			}
+		}
+		if (addedBefore.current) {
+			return;
+		} else {
+			dispatch(addToWatchList(movie));
+
+			// });
+		}
+	};
+
+	const castsList = casts.map((cast, index) => {
+		return (
+			index < 5 && (
+				<div className='flex flex-col space-y-3 items-center  h[150px] '>
+					<img
+						key={cast.id}
+						className='object-fill w-[150px] h-[150px] rounded-lg'
+						src={`${imagePath}${cast.profile_path}`}
+						alt={cast.name}
+					/>
+					<h3 className='text-white text-[16px]'>
+						{cast.name.slice(0, 15) + "..."}
+					</h3>
+				</div>
+			)
+		);
+	});
+	const crewsList = crews.map((crew, index) => {
+		return (
+			index < 5 && (
+				<div className='flex flex-col space-y-3 items-center  h[150px] '>
+					<img
+						key={crew.id}
+						className='object-fill w-[150px] h-[150px] rounded-lg'
+						src={`${imagePath}${crew.profile_path}`}
+						alt={crew.name}
+					/>
+					<h3 className='text-white text-[16px]'>
+						{crew.name.slice(0, 15) + "..."}
+					</h3>
+				</div>
+			)
+		);
+	});
 	return (
 		<>
 			{isLoading.detailsLoading ? (
@@ -51,9 +109,34 @@ const MovieDetails = () => {
 									{details.overview}
 								</p>
 							</div>
+							<button
+								className='flex items-center justify-center absolute top-20 right-10 bg-red-600 text-white text-3xl font-bold w-[45px] h-[45px] rounded-lg'
+								onClick={() => {
+									addedToWatchList(details);
+								}}>
+								<IoAdd />
+							</button>
 						</div>
 					</div>
 					<div className='mt-10 w-full h-[2px] bg-white'></div>
+					<div className='flex flex-col items-center my-10 space-y-5'>
+						<div className='flex flex-col items-center'>
+							<div className='bg-gray-400 rounded-3xl text-white text-2xl px-10 py-5'>
+								Casts
+							</div>
+							<div className='flex  space-x-2 w-full my-5 p-2'>{castsList}</div>
+						</div>
+						<div className='flex flex-col items-center'>
+							<div className='bg-gray-400 rounded-3xl text-white text-2xl px-10 py-5'>
+								Crews
+							</div>
+							<div className=' flex  my-5 space-x-2 w-full p-2'>
+								{crewsList}
+							</div>
+						</div>
+					</div>
+
+					<div>{/* <video src={details}></video> */}</div>
 				</div>
 			)}
 		</>

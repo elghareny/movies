@@ -7,16 +7,16 @@ import Home from "./pages/home/Home";
 import MovieDetails from "./pages/details/MovieDetails";
 import {useDispatch} from "react-redux";
 import {useEffect} from "react";
-import {getGenres, getTrendingMovies} from "./redux/slices/MoviesSlices";
+import {getTrendingMovies} from "./redux/slices/MoviesSlices";
 import WatchList from "./pages/watchList/WatchList";
 
 function App() {
 	const dispatch = useDispatch();
 	useEffect(() => {
 		dispatch(getTrendingMovies());
-		dispatch(getGenres());
-		// dispatch(getAllMovies());
+		// dispatch(getGenres());
 	}, [dispatch]);
+
 	return (
 		<>
 			<Navbar />

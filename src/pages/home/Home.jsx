@@ -4,6 +4,7 @@ import {CircularProgress} from "@mui/material";
 import {useSelector} from "react-redux";
 import LandingSwiper from "../../components/landing/LandingSwiper";
 import MoviesList from "../../components/moviesList/MoviesList";
+import ProductionHouse from "../../components/productionHouse/ProductionHouse";
 
 const Home = () => {
 	const {isLoading, error, genres} = useSelector((state) => state.moviesStore);
@@ -20,6 +21,8 @@ const Home = () => {
 			) : (
 				<LandingSwiper />
 			)}
+			<ProductionHouse />
+			{/* <GenreMoviesList /> */}
 
 			<MoviesList
 				error={error}

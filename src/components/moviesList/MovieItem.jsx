@@ -4,6 +4,8 @@ import {BiMenu, BiSolidHeart} from "react-icons/bi";
 import {
 	addToWatchList,
 	getMovieDetails,
+	getMoviesCredits,
+	getMovieVideo,
 	imagePath,
 } from "../../redux/slices/MoviesSlices";
 import {useDispatch, useSelector} from "react-redux";
@@ -11,13 +13,13 @@ import {Link} from "react-router-dom";
 import PropTypes from "prop-types";
 import {SlOptions} from "react-icons/sl";
 import {useEffect, useRef, useState} from "react";
-import alertify from "alertifyjs";
+import {CircularProgress} from "@mui/material";
 
 const MovieItem = ({movie}) => {
 	MovieItem.propTypes = {
 		movie: PropTypes.any.isRequired,
 	};
-	const {watchList} = useSelector((state) => state.moviesStore);
+	const {watchList, isLoading} = useSelector((state) => state.moviesStore);
 	const [options, setOptions] = useState(null);
 	const addedBefore = useRef(false);
 	const dispatch = useDispatch();
@@ -25,6 +27,8 @@ const MovieItem = ({movie}) => {
 	const showOptions = options ? "block" : "hidden";
 	const handelShow = () => {
 		dispatch(getMovieDetails(movie.id));
+		dispatch(getMovieVideo(movie.id));
+		dispatch(getMoviesCredits(movie.id));
 	};
 
 	const addedToWatchList = (movie) => {
@@ -35,24 +39,32 @@ const MovieItem = ({movie}) => {
 			}
 		}
 		if (addedBefore.current) {
-			// <Alert severity='error'>
-			// 	<AlertTitle>Error</AlertTitle>
-			// 	This movie is already added .
-			// </Alert>;
-			alertify.set("notifier", "position", "top-right");
-			alertify.success(
-				"Current position : " + alertify.get("notifier", "position"),
-			);
+			// toast.warn("🦄 Wow so easy!", {
+			// 	position: "top-right",
+			// 	autoClose: 4000,
+			// 	hideProgressBar: false,
+			// 	closeOnClick: true,
+			// 	pauseOnHover: true,
+			// 	draggable: true,
+			// 	progress: undefined,
+			// 	theme: "light",
+			// 	transition: Bounce,
+			// }
+			// );
+			return;
 		} else {
 			dispatch(addToWatchList(movie));
-			// <Alert severity='success'>
-			// 	<AlertTitle>Success</AlertTitle>
-			// 	This movie added to your movie list .
-			// </Alert>;
-			alertify.set("notifier", "position", "top-right");
-			alertify.success(
-				"Current position : " + alertify.get("notifier", "position"),
-			);
+			// toast.success("🦄 Wow so easy!", {
+			// 	position: "top-right",
+			// 	autoClose: 4000,
+			// 	hideProgressBar: false,
+			// 	closeOnClick: true,
+			// 	pauseOnHover: true,
+			// 	draggable: true,
+			// 	progress: undefined,
+			// 	theme: "light",
+			// 	transition: Bounce,
+			// });
 		}
 	};
 
@@ -79,32 +91,43 @@ const MovieItem = ({movie}) => {
 
 	return (
 		<>
-			<div className='relative h-[300px] rounded-xl group cursor-pointer'>
+			<div className='relative h-fit rounded-xl group cursor-pointer'>
 				<Link
 					to={`/details/${movie.id}`}
-					className={`h-full w-full object-fill rounded-xl ${
+					className={`h-[300px] w-full object-fill rounded-xl ${
 						options && "blur-md"
 					} transition-all duration-500`}
 					onClick={handelShow}>
-					<img
-						className='h-full w-full rounded-xl '
-						src={`${imagePath}${movie.poster_path}`}
-						alt=''
-					/>
+					{isLoading.moviesLoading ? (
+						<div className='my-20 flex justify-center items-center h-full'>
+							<CircularProgress
+								color='error'
+								size='50px'
+							/>
+						</div>
+					) : (
+						<img
+							className='h-full w-full rounded-xl '
+							src={`${imagePath}${movie.poster_path}`}
+							alt=''
+						/>
+					)}
 				</Link>
-				<div
-					className={`flex justify-center items-center text-white bg-red-600 absolute transition-all duration-500 ${
-						options
-							? "w-[26px] h-[26px] -top-1 -right-1"
-							: "border-black border-[8px] w-[40px] h-[40px] -top-3 -right-3 "
-					} rounded-full`}
-					onClick={() => {
-						setOptions(!options);
-					}}
-					onMouseEnter={() => setOptions(true)}
-					onMouseLeave={() => setOptions(false)}>
-					<SlOptions />
-				</div>
+				{!isLoading.moviesLoading && (
+					<div
+						className={`flex justify-center items-center text-white bg-red-600 absolute transition-all duration-500 ${
+							options
+								? "w-[26px] h-[26px] -top-1 -right-1"
+								: "border-black border-[8px] w-[40px] h-[40px] -top-3 -right-3 "
+						} rounded-full`}
+						onClick={() => {
+							setOptions(!options);
+						}}
+						onMouseEnter={() => setOptions(true)}
+						onMouseLeave={() => setOptions(false)}>
+						<SlOptions />
+					</div>
+				)}
 				<div
 					className={`${showOptions} absolute bg-white  top-6 -right-2 rounded-lg transition-all duration-500`}
 					onMouseEnter={() => setOptions(true)}

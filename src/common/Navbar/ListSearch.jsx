@@ -1,7 +1,11 @@
 /** @format */
 
 import {useDispatch, useSelector} from "react-redux";
-import {getMovieDetails, imagePath} from "../../redux/slices/MoviesSlices";
+import {
+	getMovieDetails,
+	getMoviesCredits,
+	imagePath,
+} from "../../redux/slices/MoviesSlices";
 import {Link} from "react-router-dom";
 import PropTypes from "prop-types";
 import {CircularProgress} from "@mui/material";
@@ -15,6 +19,7 @@ const ListSearch = ({handleSearch}) => {
 
 	const handleDetailsFromSearch = (id) => {
 		dispatch(getMovieDetails(id));
+		dispatch(getMoviesCredits(id));
 		handleSearch();
 	};
 	return (
@@ -26,8 +31,8 @@ const ListSearch = ({handleSearch}) => {
 							key={item.id}
 							to={`/details/${item.id}`}
 							onClick={() => handleDetailsFromSearch(item.id)}
-							className='flex items-center gap-1 px-2 w-full h-[150px] bg-[#282e30] rounded-md cursor-pointer'>
-							<div className='  h-[150px] object-cover w-1/3  px-1 py-4 '>
+							className='flex items-center gap-1 px-2 w-full h-[100px] bg-[#282e30] rounded-md cursor-pointer'>
+							<div className='  h-[90px] object-cover w-[50px]  px-1 py-4 '>
 								<img
 									className=' h-full w-full object-fill rounded-md'
 									src={`${imagePath}${item.poster_path}`}
@@ -44,7 +49,7 @@ const ListSearch = ({handleSearch}) => {
 				<div className='my-2 flex justify-center items-center h-auto'>
 					<CircularProgress
 						color='error'
-						size='50px'
+						size='30px'
 					/>
 				</div>
 			)}
